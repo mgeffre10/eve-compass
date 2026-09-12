@@ -1,0 +1,28 @@
+.profileSidebar {
+	height: 100%;
+	border-right: 1px solid gray;
+}
+
+.profileHeader {
+	display: grid;
+	grid-template-columns: repeat(2, 50%);
+	padding: 10px;
+}
+
+.leftSideHeader {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 5px;
+}
+
+.rightSideHeader {
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+
+.affiliationBadges {
+	display: flex;
+	justify-content: space-around;
+}

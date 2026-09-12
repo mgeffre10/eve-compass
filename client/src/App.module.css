@@ -1,0 +1,36 @@
+.app {
+	background: url(./images/app_background.jpg) no-repeat;
+	background-size: cover;
+	min-height: inherit;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.appContainer {
+	width: 80vw;
+	height: 90vh;
+	background-color: rgba(0, 0, 0, 0.7);
+	border: 1px solid gray;
+	border-radius: 10px;
+}
+
+.loginPage {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 15px;
+}
+
+.loginButton {
+	background: url(./images/eve-sso-login-black-large.png) no-repeat;
+	width: 270px;
+	height: 50px;
+}
+
+.dashboard {
+	display: grid;
+	grid-template-columns: 600px auto;
+	height: inherit;
+}
