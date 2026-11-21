@@ -23,6 +23,45 @@ body {
   color: var(--color-text);
 }
 
+/* ---------- Scrollbars ---------- */
+
+/* Tells the browser the whole app is dark, so built-in parts it draws
+   itself (scrollbars, form controls) use their dark versions. */
+:root {
+  color-scheme: dark;
+}
+
+/* Standard way (Chrome, Edge, Firefox): applies to every scrollable element.
+   Colors are: thumb (the part you drag), then track (the groove). */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-border-strong) transparent;
+}
+
+/* Older way, for Safari. Chrome ignores these once scrollbar-color is set,
+   so they only kick in where the standard properties aren't supported. */
+@supports not (scrollbar-color: auto) {
+  ::-webkit-scrollbar {
+    width: 10px;   /* vertical scrollbars */
+    height: 10px;  /* horizontal scrollbars */
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--color-border-strong);
+    border-radius: 999px;
+    border: 2px solid transparent; /* inset the thumb so it looks slimmer */
+    background-clip: padding-box;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--color-text-muted);
+  }
+}
+
 /* Use for numbers, IDs, ISK amounts and durations, e.g. className="mono" */
 .mono {
   font-family: var(--font-mono);
