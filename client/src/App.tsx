@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
-import { Me } from './types'
+import { Me } from './types';
 import styles from "./App.module.css";
 import ProfileSidebar from "./components/ProfileSidebar/ProfileSidebar";
+import ApplicationHeader from "./components/ApplicationHeader/ApplicationHeader";
 
 function App() {
   // useState<Me | null> means: this variable is EITHER a Me object,
@@ -48,10 +49,8 @@ function App() {
   return (
     <div className={styles.app}>
 		<div className={styles.appContainer}>
-			<div className={styles.dashboard}>
-				<ProfileSidebar me={me} />
-
-			</div>
+			<ApplicationHeader characterName={me.characterName} />
+			<span>Navigation Stub</span>
 		</div>
     </div>
   );

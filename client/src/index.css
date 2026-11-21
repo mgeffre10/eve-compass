@@ -11,7 +11,56 @@ h1, h2, h3, p {
   margin: 0;
 }
 
+body {
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.4;
+  -webkit-font-smoothing: antialiased; /* thinner, crisper text on dark backgrounds (macOS) */
+}
+
 #root {
   min-height: 100vh;
-  color: white;
+  color: var(--color-text);
+}
+
+/* Use for numbers, IDs, ISK amounts and durations, e.g. className="mono" */
+.mono {
+  font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums; /* every digit the same width, so columns line up */
+}
+
+:root {
+  /* Fonts (loaded in main.tsx). The names after the first are fallbacks
+     used if a font fails to load. */
+  --font-sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, Consolas, monospace;
+
+  /* Surfaces */
+  --color-bg-page: #0E1116;        /* page background */
+  --color-bg-bar: #11161D;         /* header bar */
+  --color-surface: #161B22;        /* cards and panels */
+  --color-surface-inset: #1E2530;  /* portrait and icon tiles */
+
+  /* Borders and tracks */
+  --color-border: #232B36;         /* card borders, dividers, table rules, progress track */
+  --color-border-strong: #2F3A48;  /* buttons, tile borders, portrait silhouette */
+
+  /* Text */
+  --color-text: #E6EAF0;           /* primary text */
+  --color-text-code: #C5CEDA;      /* monospace cells in the nav map table */
+  --color-text-muted: #9AA6B5;     /* labels, secondary text, neutral icon strokes */
+
+  /* Accent */
+  --color-accent: #5CC8E0;         /* links, active nav, primary button, progress fill, logo */
+  --color-accent-hover: #8EDDEE;   /* link hover, login button focus outline */
+  --color-on-accent: #0B1015;      /* text on the accent button */
+
+  /* Status */
+  --color-success: #3DDC84;        /* online dot, positive amounts, security status */
+  --color-danger: #FF6B6B;         /* offline dot, negative amounts */
+  --color-warning: #F2B14C;        /* unallocated SP, alliance icon, "partly built" */
+
+  /* Loading skeleton */
+  --color-skeleton-dark: rgba(30, 30, 30, 0.6);
+  --color-skeleton-light: rgba(90, 90, 90, 0.6);
 }

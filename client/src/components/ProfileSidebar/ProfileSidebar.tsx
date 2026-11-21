@@ -7,6 +7,8 @@ import AffiliationBadge from '../AffiliationBadge/AffiliationBadge';
 import usePortrait from '../../hooks/usePortrait';
 import useOnlineStatus from '../../hooks/useOnlineStatus';
 import useCharacterInfo from '../../hooks/useCharacterInfo';
+import OnlineIndicator from '../OnlineIndicator/OnlineIndicator';
+import { getAllianceIcon, getCorporationIcon } from '../../utils/eveImages';
 
 
 type ProfileSidebarProps = {
@@ -25,8 +27,7 @@ type AffiliationNames = {
 
 function ProfileSidebar({ me }: ProfileSidebarProps) {
 	const characterInfo = useCharacterInfo(me.characterId);
-	const onlineStatus = useOnlineStatus(me.characterId);
-	const portrait = usePortrait(me.characterId);
+	const portraits = usePortrait(me.characterId);
 	
 	const [affiliationIcons, setAffiliationIcons] = useState<AffiliationIcons>({
 		allianceIcon: null,
@@ -44,7 +45,7 @@ function ProfileSidebar({ me }: ProfileSidebarProps) {
 			fetch('http://localhost:4000/api/universe_names', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify([characterInfo.alliance_id, characterInfo.corporation_id, characterInfo.race_id].filter((id): id is number => id != null))
+				body: JSON.stringify([characterInfo.alliance_id, characterInfo.corporation_id].filter((id): id is number => id != null))
 			})
 			.then(res => res.json())
 			.then((data: UniverseNameResponse[]) => {
@@ -52,6 +53,11 @@ function ProfileSidebar({ me }: ProfileSidebarProps) {
 					setAffiliationNames({
 						allianceName: data.find(name => name.id === characterInfo.alliance_id)?.name ?? null,
 						corporationName: data.find(name => name.id === characterInfo.corporation_id)?.name ?? null,
+					});
+
+					setAffiliationIcons({
+						allianceIcon: getAllianceIcon(characterInfo.alliance_id),
+						corporationIcon: getCorporationIcon(characterInfo.corporation_id)
 					});
 				}
 			});
@@ -64,9 +70,12 @@ function ProfileSidebar({ me }: ProfileSidebarProps) {
 		<div className={styles.profileSidebar}>
 			<div className={styles.profileHeader}>
 				<div className={styles.leftSideHeader}>
-					{portrait ? <img src={portrait} width={256} height={256} /> : <LoadingDiv width={256} height={256} />}
-					<h1>{me.characterName}</h1>
-					{onlineStatus ? <span>{onlineStatus.online ? 'Online' : 'Offline'}</span> : <></>}
+					{portraits ? <img src={portraits['px256x256']} width={256} height={256} /> : <LoadingDiv width={256} height={256} />}
+					<div className={styles.characterName}>
+						<h1>{me.characterName}</h1>
+						<OnlineIndicator characterID={me.characterId} />
+					</div>
+					<span>Security Status: {characterInfo?.security_status}</span>
 				</div>
 				<div className={styles.rightSideHeader}>
 					<div className={styles.affiliationBadges}>

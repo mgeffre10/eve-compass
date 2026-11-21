@@ -8,7 +8,7 @@ type PortraitResponse = {
 }
 
 function usePortrait(characterId: number | null) {
-	const [portrait, setPortrait] = useState<string | null>(null);
+	const [portrait, setPortrait] = useState<PortraitResponse | null>(null);
 
 	useEffect(() => {
 		if (!characterId) return;
@@ -16,7 +16,7 @@ function usePortrait(characterId: number | null) {
 		async function load() {
 			const res = await fetch("http://localhost:4000/api/portrait");
 			const json = await res.json();
-			setPortrait(json['px256x256']);
+			setPortrait(json);
 		}
 		
 		load();

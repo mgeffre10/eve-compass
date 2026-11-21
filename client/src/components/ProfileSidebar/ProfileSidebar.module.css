@@ -16,6 +16,13 @@
 	gap: 5px;
 }
 
+.characterName {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 5px;
+}
+
 .rightSideHeader {
 	display: flex;
 	flex-direction: column;

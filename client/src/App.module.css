@@ -1,5 +1,5 @@
 .app {
-	background: url(./images/app_background.jpg) no-repeat;
+	background-color: var(--color-bg-page);
 	background-size: cover;
 	min-height: inherit;
 	display: flex;
@@ -8,11 +8,8 @@
 }
 
 .appContainer {
-	width: 80vw;
-	height: 90vh;
-	background-color: rgba(0, 0, 0, 0.7);
-	border: 1px solid gray;
-	border-radius: 10px;
+	width: 100vw;
+	height: 100vh;
 }
 
 .loginPage {
