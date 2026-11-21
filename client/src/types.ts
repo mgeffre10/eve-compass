@@ -17,3 +17,5 @@ export type UniverseNameResponse = {
 	id: number;
 	name: string;
 }
+
+export type PageType = 'overview' | 'skills' | 'industry' | 'fittings' | 'assets' | 'wallet' | 'contracts' | 'market' | 'mail';

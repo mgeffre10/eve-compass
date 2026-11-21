@@ -1,18 +1,30 @@
 import { useEffect, useState } from "react";
-import { Me } from './types';
+import { Me, PageType } from './types';
 import styles from "./App.module.css";
 import ProfileSidebar from "./components/ProfileSidebar/ProfileSidebar";
 import ApplicationHeader from "./components/ApplicationHeader/ApplicationHeader";
+import ApplicationNavigation from "./components/ApplicationNavigation/ApplicationNavigation";
 
 function App() {
-  // useState<Me | null> means: this variable is EITHER a Me object,
-  // OR null (when we don't know yet / user isn't logged in).
-  // The `| null` part is a TypeScript "union type".
+  const [currentPage, setCurrentPage] = useState<PageType>('overview');
   const [me, setMe] = useState<Me | null>(null);
   const [loading, setLoading] = useState(true);
 
   const redirectToLogin = () => {
 	window.location.href = "http://localhost:4000/login";
+  }
+
+  const onLogout = () => {
+	fetch('http://localhost:4000/logout', {
+		method: 'POST'
+	})
+		.finally(() => setMe(null));
+  };
+
+  const onPageChange = (newPage: PageType) => {
+	if (newPage !== currentPage) {
+		setCurrentPage(newPage);
+	}
   }
 
   // useEffect runs this code once, when the component first renders.
@@ -49,8 +61,8 @@ function App() {
   return (
     <div className={styles.app}>
 		<div className={styles.appContainer}>
-			<ApplicationHeader characterName={me.characterName} />
-			<span>Navigation Stub</span>
+			<ApplicationHeader characterName={me.characterName} onLogout={onLogout} />
+			<ApplicationNavigation currentPage={currentPage} onPageChange={onPageChange} />
 		</div>
     </div>
   );

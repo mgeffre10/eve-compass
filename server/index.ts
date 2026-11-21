@@ -51,20 +51,43 @@ const ensureFreshToken = async () => {
 	}
 };
 
-const exchangeToken = async (params: URLSearchParams) => {
+// "Basic" auth header that proves to EVE this request comes from our app.
+// Used by both the token exchange and the revoke call.
+const getBasicAuthHeader = () => {
 	const basicAuth = Buffer.from(
 		`${process.env.EVE_SSO_CLIENT_ID}:${process.env.EVE_SSO_SECRET_KEY}`
 	).toString("base64");
 
+	return `Basic ${basicAuth}`;
+};
+
+const exchangeToken = async (params: URLSearchParams) => {
 	const res = await fetch("https://login.eveonline.com/v2/oauth/token", {
 		method: "POST",
 		headers: {
-		Authorization: `Basic ${basicAuth}`,
+		Authorization: getBasicAuthHeader(),
 		"Content-Type": "application/x-www-form-urlencoded",
 		},
 		body: params,
 	});
 	return res.json() as Promise<TokenResponse>;
+};
+
+// Tells EVE to permanently invalidate a refresh token, so it can't be
+// used to get new access tokens even if someone copied it.
+const revokeRefreshToken = async (token: string) => {
+	const res = await fetch("https://login.eveonline.com/v2/oauth/revoke", {
+		method: "POST",
+		headers: {
+			Authorization: getBasicAuthHeader(),
+			"Content-Type": "application/x-www-form-urlencoded",
+		},
+		body: new URLSearchParams({ token_type_hint: "refresh_token", token }),
+	});
+
+	if (!res.ok) {
+		throw new Error(`Revoke failed: ${res.status} ${await res.text()}`);
+	}
 };
 
 const requireAuth = async (req: Request, res: Response, next: NextFunction) => {
@@ -89,6 +112,15 @@ const validateResponse = async (esiRes: globalThis.Response, res: Response) => {
 	res.json(data);
 };
 
+const clearSessionVariables = () => {
+	accessToken = null;
+	refreshToken = null;
+	tokenExpiresAt = null;
+	characterId = null;
+	characterName = null;
+	oauthState = null;
+}
+
 // STEP 1: Browser hits this to start login. We redirect to EVE's login page.
 app.get("/login", (req, res) => {
 	oauthState = crypto.randomBytes(16).toString('hex');
@@ -101,6 +133,24 @@ app.get("/login", (req, res) => {
 	});
 
 	res.redirect(`https://login.eveonline.com/v2/oauth/authorize?${params}`);
+});
+
+app.post('/logout', async (req, res) => {
+	// Revoke at EVE first, while we still have the token. If it fails
+	// (EVE down, token already expired), log it but still log the user out.
+	if (refreshToken) {
+		try {
+			await revokeRefreshToken(refreshToken);
+		} catch (err) {
+			console.error(err);
+		}
+	}
+
+	clearSessionVariables();
+
+	// 204 = "success, nothing to send back". Without a response the
+	// browser's fetch would wait forever.
+	res.sendStatus(204);
 });
 
 // STEP 2: EVE redirects back here with a one-time "code" after the user logs in.

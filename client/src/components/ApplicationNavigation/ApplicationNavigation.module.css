@@ -1,0 +1,75 @@
+/* The tab bar under the header */
+.applicationNavigation {
+	display: flex;
+	padding: 0 24px;                /* tab padding below adds 12px, so text lines up with the header's 36px */
+	background-color: var(--color-bg-bar);
+	border-bottom: 1px solid var(--color-border);
+	overflow-x: auto;               /* on narrow screens, scroll the tabs instead of squashing them */
+}
+
+/* Every tab */
+.applicationNavigation button {
+	padding: 14px 12px;
+	background: transparent;
+	border: none;
+	border-bottom: 2px solid transparent; /* invisible, so the active tab doesn't shift when it turns cyan */
+	color: var(--color-text-muted);
+	font: inherit;
+	font-size: 15px;
+	white-space: nowrap;
+	cursor: pointer;
+	transition: color 0.15s, border-color 0.15s;
+}
+
+.applicationNavigation button:hover {
+	color: var(--color-text);
+}
+
+/* Visible outline only when focused with the keyboard (Tab), not on click */
+.applicationNavigation button:focus-visible {
+	outline: 2px solid var(--color-accent-hover);
+	outline-offset: -2px;           /* draw inside the tab so the bar doesn't clip it */
+}
+
+/* The tab for the page currently shown */
+.applicationNavigation button[aria-current="page"] {
+	color: var(--color-text);
+	border-bottom-color: var(--color-accent);
+}
+
+/* Sliding underline. Only in browsers that support CSS anchor positioning;
+   other browsers skip this whole block and keep the static underline above. */
+@supports (anchor-name: --a) {
+	.applicationNavigation {
+		position: relative;         /* the sliding line is positioned inside the bar */
+	}
+
+	/* Name the active tab "--active-tab" so the line can attach to it,
+	   and hide its own underline since the sliding line replaces it. */
+	.applicationNavigation button[aria-current="page"] {
+		anchor-name: --active-tab;
+		border-bottom-color: transparent;
+	}
+
+	/* The sliding line: an extra element drawn by CSS after the tabs.
+	   It copies the active tab's left edge, width and bottom edge, and the
+	   transition animates it whenever the active tab changes. */
+	.applicationNavigation::after {
+		content: "";
+		position: absolute;
+		position-anchor: --active-tab;
+		left: anchor(left);
+		width: anchor-size(width);
+		bottom: anchor(bottom);
+		height: 2px;
+		background-color: var(--color-accent);
+		transition: left 0.25s ease, width 0.25s ease;
+	}
+}
+
+/* Respect the operating system's "reduce motion" setting */
+@media (prefers-reduced-motion: reduce) {
+	.applicationNavigation::after {
+		transition: none;
+	}
+}
